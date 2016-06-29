@@ -547,11 +547,20 @@
     
     [AVOSCloudSNS loginWithCallback:^(id object, NSError *error) {
         if (error) {
+            
+            
+            
             NSLog(@"failed to get authentication from weibo. error: %@", error.description);
+            
+            
         } else {
             [AVUser loginWithAuthData:object platform:AVOSCloudSNSPlatformQQ block:^(AVUser *user, NSError *error) {
                 if ([self filterError:error]) {
+                    
+                    
                     [self loginSucceedWithUser:user authData:object];
+                
+                
                 }
             }];
         }

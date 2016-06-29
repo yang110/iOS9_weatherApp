@@ -70,7 +70,7 @@
 {
     
     
-    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 64,kwidth , kheight)];
+    _tableView=[[UITableView alloc]initWithFrame:CGRectMake(0, 0,kwidth , kheight)];
     [self.view addSubview:_tableView];
     
     _tableView.delegate=self;

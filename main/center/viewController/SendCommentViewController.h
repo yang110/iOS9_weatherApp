@@ -23,10 +23,8 @@ typedef void(^AlertBlock) (NSString *string1,UIImage *image,NSString *geo);
     //2 工具栏
     UIView *_editorBar;
     
-    
     ZoomImageView *_zoomImageView;
-    
-    
+
     //4
     CLLocationManager *_locationManager;
     

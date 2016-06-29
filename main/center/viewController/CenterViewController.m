@@ -20,20 +20,21 @@
 {
     NSMutableArray *_arrayModel;
     NSString *imageStr;
-    UICollectionView *_collectionView;
     YangView *headView;
+    
+    
     NSString *location110;//当前地理位置（杭州）
     
+    
+    
 }
+@property(nonatomic, strong)  UICollectionView *collectionView;
 
 @property(nonatomic, strong) UIImagePickerController *picker;//相册图片选择
 
 @end
 
 @implementation CenterViewController
-
-
-
 
 #pragma  mark - 上传美景图
 
@@ -45,23 +46,89 @@
     [button setImage:[UIImage imageNamed:@"camera.png"] forState:UIControlStateNormal];
     UIBarButtonItem *barButtonItem=[[UIBarButtonItem alloc]initWithCustomView:button];
     self.navigationItem.rightBarButtonItem = barButtonItem;
+}
+- (void)actionSheet:(UIActionSheet *)actionSheet clickedButtonAtIndex:(NSInteger)buttonIndex
+{
     
+//    NSLog(@"%li",buttonIndex);
+    
+    
+    if (buttonIndex==0)
+    {
+        //摄像头
+        NSLog(@"摄像头");
+        
+        
+        
+        
+        
+        //是否有摄像头
+        BOOL isCamera = [UIImagePickerController isCameraDeviceAvailable:UIImagePickerControllerCameraDeviceRear];
+        if (!isCamera) {
+            UIAlertView *alert  =[ [UIAlertView alloc]initWithTitle:@"木有摄像头" message:nil delegate:self cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
+            [alert show];
+            return;
+        }
+        
+        _picker.sourceType=UIImagePickerControllerSourceTypeCamera;
+        [self presentViewController:_picker animated:YES completion:nil];
+        
+    }
+    else if(buttonIndex==1)
+    {
+        
+        //选择照片
+        NSLog(@"相册");
+        
+        //选择相册
+        _picker.sourceType=UIImagePickerControllerSourceTypeSavedPhotosAlbum;
+
+        [self presentViewController:_picker animated:YES completion:nil];
+    }
+    
+    else if(buttonIndex==2)
+    {
+        return;
+        
+        
+    }
 }
 
 //打开相册框
 - (void)selectImage
 {
     
+// 定位 模拟器上问题 所以删除
+//        [self getGeoPoint];
     
-        [self getGeoPoint];
     
     
+    location110=@"杭州";
     
     AVUser *user=[AVUser currentUser];
     if (user!=nil) {
         
-        [self presentViewController:_picker animated:YES completion:nil];
+        
+        
+        UIActionSheet *actionSheet=[[UIActionSheet alloc]initWithTitle:@"提示"
+                                                              delegate:self
+                                                     cancelButtonTitle:@"取消" destructiveButtonTitle:@"摄像头" otherButtonTitles:@"相册", nil];
+        
 
+        
+        
+//        [self presentViewController:_picker animated:YES completion:nil];
+
+        
+        
+        
+            [actionSheet showInView:self.view];
+        
+        
+        
+        
+        
+        
     }
     else
     {
@@ -77,9 +144,6 @@
 //关闭相册后  1）保存image  2）创建comment文件  3）获取url 4）model添加url和commentId  5）url添加到json并保存
 - (void)imagePickerController:(UIImagePickerController *)picker didFinishPickingMediaWithInfo:(NSDictionary *)info
 {
-   
-    
-    
     
     [_picker dismissViewControllerAnimated:YES completion:^{
         
@@ -90,6 +154,7 @@
         
    
     
+        //压缩
         UIImage *image=info[@"UIImagePickerControllerOriginalImage"];
         NSData *imageData = UIImageJPEGRepresentation(image, 0.0001);
         AVFile *imageFile = [AVFile fileWithName:@"image.png" data:imageData];
@@ -186,9 +251,6 @@
     _collectionView.dataSource=self;
     
     
-
-    
-    
     //注册cell
     UINib *nib=[UINib nibWithNibName:@"FirstCollectionViewCell" bundle:nil];
     [_collectionView registerNib:nib forCellWithReuseIdentifier:@"cell"];
@@ -280,8 +342,11 @@
     self.title=@"实景";
     
     
-    [self getGeoPoint];//定位
+//    [self getGeoPoint];//定位
   
+    location110=@"杭州";
+    
+    
     
     [self createBarButtonItem];//按钮
 
@@ -297,7 +362,9 @@
     [self loadData];
     
     //下啦刷新
-    _collectionView .header=[MJRefreshHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadData)];
+    self.collectionView .header=[MJRefreshHeader headerWithRefreshingTarget:self refreshingAction:@selector(loadData)];
+
+    
 
 }
 
@@ -309,6 +376,8 @@
     _arrayModel=[[NSMutableArray array]init];
     //查询(永不改的地方   每个用户一开始就查询55dd95e060b20ee9ecd24f22文件)
     AVQuery *query = [AVQuery queryWithClassName:@"Post"];
+    
+
     [query getObjectInBackgroundWithId:baseInit block:^(AVObject *object, NSError *error) {
         
         
@@ -326,6 +395,8 @@
             
             [_arrayModel insertObject:model atIndex:0];
         }
+        
+        
         [_collectionView reloadData];
         
         headView.array=_arrayModel;
@@ -338,7 +409,6 @@
 
     
 }
-
 
 #pragma -mark collection代理
 //2
@@ -353,7 +423,7 @@
     
     FirstCollectionViewCell * cell=[collectionView dequeueReusableCellWithReuseIdentifier:@"cell" forIndexPath:indexPath];
     
-    cell.backgroundColor=[UIColor yellowColor];
+    cell.backgroundColor=[UIColor grayColor];
     cell.model=_arrayModel[indexPath.row];
     
     return cell;
@@ -374,6 +444,7 @@
 
 -(CGSize)collectionView:(UICollectionView *)collectionView layout:(UICollectionViewLayout *)collectionViewLayout referenceSizeForHeaderInSection:(NSInteger)section
 {
+    
     CGSize size=CGSizeMake(kScreenWidth, 200);
     return size;
     

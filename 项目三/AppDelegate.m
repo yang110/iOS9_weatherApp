@@ -34,7 +34,9 @@
     
     [AVAnalytics trackAppOpenedWithLaunchOptions:launchOptions];
    
-//    
+
+    
+    //关于 定位 删除  模拟器不适应
 //    [AVGeoPoint geoPointForCurrentLocationInBackground:^(AVGeoPoint *geoPoint, NSError *error) {
 //        AVUser *user=[AVUser currentUser];
 //        if (user!=nil) {
@@ -64,10 +66,14 @@
 {
     
     
-    
+//    
     ViewController *vc1=[[ViewController alloc]init];
     BaseNavViewController *nav1=[[BaseNavViewController alloc]initWithRootViewController:vc1];
 
+//    
+//    UIViewController   *vc1=[[UIViewController alloc]init];
+//    UINavigationController *nav1=[[UINavigationController alloc]initWithRootViewController:vc1   ];
+//    
     
     CenterViewController *vc2=[[CenterViewController alloc]init];
     BaseNavViewController *nav2=[[BaseNavViewController   alloc]initWithRootViewController:vc2];

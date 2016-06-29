@@ -54,21 +54,15 @@
     self=[super init];
     if (self)
     {
-        
-       
-        
-        
-        
          self.hidesBottomBarWhenPushed=YES;
-        
         
         _tableView  =[[UITableView alloc]initWithFrame:self.view.bounds style:UITableViewStylePlain];
         _tableView.delegate=self;
         _tableView.dataSource=self;
         _tableView.backgroundColor=[UIColor clearColor];
     
+        
         _tableView.separatorStyle= UITableViewCellSeparatorStyleNone;
-
         [self.view addSubview:_tableView];
         
         UINib *nib=[UINib nibWithNibName:@"TableViewCell" bundle:nil];
@@ -80,8 +74,6 @@
         
         //创建头大图
         [self createHeader];
-        
-        
     }
     return self;
     
@@ -135,12 +127,7 @@
 -(void)commentAction:(NSString *)string1 and:(UIImage *)image andGeo:(NSString *)geo
 {
     
-    
-    
-    
     [self getLocalDate];
-    
-    
     //分为 有图片传 没图片传
     if (image!=nil)
     {
@@ -314,6 +301,8 @@
 
 }
 
+
+
 //要评论 到SendCommentViewController
 -(void)presentViewController
 {
@@ -322,27 +311,16 @@
     AVUser *user=[AVUser currentUser];
     
     if (user==nil) {
-        
-        
         UIAlertView *alterView=[[UIAlertView alloc]initWithTitle:@"提示" message:@"请先登入" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        
         [alterView show];
-        
-        
         return;
     }
     
-    
-    
-    
-    
-    
     SendCommentViewController *vc=[[SendCommentViewController alloc]init];
-    
     UINavigationController *vc1=[[UINavigationController alloc]initWithRootViewController:vc];
     
     
-  __weak  CenterSecondViewController *vcc=self;
+    __weak  CenterSecondViewController *vcc=self;
     
     vc.block110=^(NSString *string1,UIImage *image,NSString *geo)
     {
@@ -350,8 +328,6 @@
     };
     
     [self presentViewController:vc1 animated:YES completion:nil];
-    
-    
     
 }
 
@@ -364,9 +340,6 @@
     [headerImageView sd_setImageWithURL:[NSURL URLWithString: _model.imageStr ] ];
     nameLabel.text=_model.name;
     cityLabel.text=_model.location110;
-    
-    
-    
     
     //下载评论
     [self loadComment];
@@ -406,9 +379,6 @@
                  commentModel.userImageUrl=dic[@"userImageUrl"];
                  commentModel.date=dic[@"date"];
                  
-                
-                 
-                 
                  [arrayComment insertObject:commentModel atIndex:0];
                  
              }
@@ -424,13 +394,9 @@
        }];
 }
 
-
-
 - (NSInteger)tableView:(UITableView *)tableView numberOfRowsInSection:(NSInteger)section
 {
-    
     return arrayComment.count;
-    
 }
 
 - (UITableViewCell *)tableView:(UITableView *)tableView cellForRowAtIndexPath:(NSIndexPath *)indexPath
@@ -448,6 +414,8 @@
 //返回Row高度
 - (CGFloat)tableView:(UITableView *)tableView heightForRowAtIndexPath:(NSIndexPath *)indexPath
 {
+    
+    
     CommentAndFrameModel *model=arrayComment[indexPath.row];
     return model.cellFrame.size.height;
     
@@ -523,7 +491,9 @@
 //返回组的头部高度
 - (CGFloat)tableView:(UITableView *)tableView heightForHeaderInSection:(NSInteger)section
 {
+    
     return 44;
+    
 }
 
 
@@ -544,10 +514,7 @@
     if (user!=nil) {
     
         [buttonPraise setBackgroundImage:[UIImage imageNamed:@"btn_starred@2x.png"] forState:UIControlStateNormal];
-  
         button.tag=1;
-        
-        
         AVObject *post = [AVObject objectWithoutDataWithClassName:@"Comment" objectId:_model.commentId];
         [post saveInBackgroundWithBlock:^(BOOL succeeded, NSError *error) {
             // 增加点赞的人数
@@ -576,30 +543,25 @@
     
 }
 
-
-
 //回复
 -(void)tableView:(UITableView *)tableView didSelectRowAtIndexPath:(NSIndexPath *)indexPath
 {
     
     [tableView deselectRowAtIndexPath:indexPath animated:YES];
     
-    AVUser *user=[AVUser currentUser];
     
+    
+    AVUser *user=[AVUser currentUser];
     if (user==nil) {
-        
-        
         UIAlertView *alterView=[[UIAlertView alloc]initWithTitle:@"提示" message:@"请先登入" delegate:nil cancelButtonTitle:@"确定" otherButtonTitles:nil, nil];
-        
         [alterView show];
-        
-        
         return;
     }
+    
+    
 
     
     SendCommentViewController *vc=[[SendCommentViewController alloc]init];
-    
     UINavigationController *vc1=[[UINavigationController alloc]initWithRootViewController:vc];
     
     

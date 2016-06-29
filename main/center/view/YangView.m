@@ -11,7 +11,60 @@
 #import "UIImageView+WebCache.h"
 #import "FirstModel.h"  
 @implementation YangView
+{
+        NSTimer *_timer;
+}
 
+- (void)startTimer
+{
+    NSLog(@"定时器开启");
+    _timer=[NSTimer scheduledTimerWithTimeInterval:3 target:self selector:@selector(timerAction) userInfo:@"11" repeats:YES];
+}
+
+- (void)stopTimer
+{
+    
+    [_timer invalidate];
+}
+
+-(void)pageControlAction
+{
+    
+    scrollview.contentOffset=CGPointMake(pageControl.currentPage*kScreenWidth, 0);
+    
+    
+    
+}
+
+- (void)timerAction
+{
+    
+    [UIView beginAnimations:nil context:nil];
+    
+    [UIView setAnimationDuration:1];
+    
+    
+
+    
+    if (pageControl.currentPage==3)
+    {
+        pageControl.currentPage=0;
+        
+        scrollview.contentOffset=CGPointMake(kScreenWidth*pageControl.currentPage, 0);
+        
+    }
+    else
+    {
+    
+        pageControl.currentPage=pageControl.currentPage+1;
+        
+        scrollview.contentOffset=CGPointMake(kScreenWidth*pageControl.currentPage, 0);
+        
+    }
+ 
+    
+    [UIView commitAnimations];
+}
 
 -(instancetype)initWithFrame:(CGRect)frame
 {
@@ -22,6 +75,7 @@
         
         [self createScrollerView];
         
+        [self startTimer];
         
         
        
@@ -29,8 +83,6 @@
     }
     return self;
 }
-
-
 
 -(void)setArray:(NSArray *)array
 {
@@ -45,14 +97,45 @@
 
 -(void)layoutSubviews
 {
+    
+    
     //如果没有4张图 那么有几张显示几张
     if (_array.count>=4)
     {
         for (int i=0; i<4; i++)
         {
             FirstModel *model=_array[i];
+
             
-            [arrayImageView[i] sd_setImageWithURL:[NSURL URLWithString:model.imageStr]];
+            
+//            原图
+//            [arrayImageView[i] sd_setImageWithURL:[NSURL URLWithString:model.imageStr]];
+
+        
+        
+            //缩略图
+            AVFile *file = [AVFile fileWithURL:model.imageStr];
+            [file getThumbnail:YES width:365 height:200 withBlock:^(UIImage *image, NSError *error)
+             {
+                 
+                 if (error==nil) {
+
+                     UIImageView *imageview= arrayImageView[i];
+                     imageview.image=image;
+                     
+                 }
+                 else
+                 {
+                     [arrayImageView[i]  sd_setImageWithURL:[NSURL URLWithString:model.imageStr]];
+                 }
+             }];
+
+        
+        
+        
+        
+        
+        
         }
     }
     else
@@ -60,7 +143,24 @@
         for (int i=0; i<_array.count; i++)
         {
             FirstModel *model=_array[i];
-            [arrayImageView[i] sd_setImageWithURL:[NSURL URLWithString:model.imageStr]];
+            
+            //缩略图
+            AVFile *file = [AVFile fileWithURL:model.imageStr];
+            [file getThumbnail:YES width:365 height:200 withBlock:^(UIImage *image, NSError *error)
+             {
+                 
+                 if (error==nil) {
+                     
+                     UIImageView *imageview= arrayImageView[i];
+                     imageview.image=image;
+                     
+                 }
+                 else
+                 {
+                     [arrayImageView[i]  sd_setImageWithURL:[NSURL URLWithString:model.imageStr]];
+                 }
+             }];
+
         }
     }
 }
@@ -101,7 +201,7 @@
     pageControl.numberOfPages=4;
     pageControl.pageIndicatorTintColor=[UIColor grayColor];
     pageControl.currentPageIndicatorTintColor=[UIColor whiteColor];
-    
+    [pageControl addTarget:self action:@selector(pageControlAction) forControlEvents: UIControlEventValueChanged];
     
     
 }
@@ -114,4 +214,6 @@
     pageControl.currentPage=(scrollview.contentOffset.x)/kScreenWidth;
     
 }
+
+
 @end
